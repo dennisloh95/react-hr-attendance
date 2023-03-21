@@ -49,6 +49,15 @@ enum DetailKey {
   lateAndEarly = "迟到并早退",
 }
 
+export enum DetailKeyEng {
+  "正常出勤" = "Normal",
+  "旷工" = "Absent",
+  "漏打卡" = "Miss",
+  "迟到" = "Late",
+  "早退" = "Early",
+  "迟到并早退" = "Late & Early",
+}
+
 const originDetailValue: Record<keyof typeof DetailKey, number> = {
   normal: 0,
   absent: 0,
@@ -67,7 +76,7 @@ const Sign = () => {
   const [month, setMonth] = useState(date.getMonth());
   const navigate = useNavigate();
   const handleToException = () => {
-    navigate("/exception");
+    navigate(`/exception?month=${month + 1}`);
   };
   const signsInfos = useSelector((state: RootState) => state.signs.infos);
   const usersInfos = useSelector((state: RootState) => state.users.infos);
@@ -96,9 +105,7 @@ const Sign = () => {
       const detailMonth = (signsInfos.detail as { [index: string]: unknown })[
         toZero(month + 1)
       ] as { [index: string]: unknown };
-      console.log({ detailMonth });
       for (let attr in detailMonth) {
-        console.log(detailMonth[attr]);
         switch (detailMonth[attr]) {
           case DetailKey.normal:
             originDetailValue.normal++;
@@ -186,7 +193,7 @@ const Sign = () => {
       >
         <Descriptions.Item label="Month">{monthList[month]}</Descriptions.Item>
         {Object.entries(DetailKey).map((v) => (
-          <Descriptions.Item key={v[0]} label={v[1]}>
+          <Descriptions.Item key={v[0]} label={DetailKeyEng[v[1]]}>
             {detailValue[v[0] as keyof typeof DetailKey]}
           </Descriptions.Item>
         ))}
