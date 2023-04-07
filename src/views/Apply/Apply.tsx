@@ -27,6 +27,9 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../store";
 import _ from "lodash";
 import dayjs from "dayjs";
+import type { Info } from "../../store/modules/news";
+import { putRemindAction } from "../../store/modules/news";
+import { updateInfo } from "../../store/modules/news";
 
 interface FormInfos {
   approvername: string;
@@ -95,6 +98,7 @@ const Apply = () => {
       (v.state === approverType || defaultType === approverType) &&
       (v.note as string).includes(searchWord)
   );
+  const newsinfo = useSelector((state: RootState) => state.news.info);
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
@@ -112,6 +116,21 @@ const Apply = () => {
       );
     }
   }, [applyList, dispatch, usersInfos]);
+
+  useEffect(() => {
+    if (newsinfo.applicant) {
+      dispatch(
+        putRemindAction({ userid: usersInfos._id as string, applicant: false })
+      ).then((action) => {
+        const { errcode, info } = (
+          action.payload as { [index: string]: unknown }
+        ).data as { [index: string]: unknown };
+        if (errcode === 0) {
+          dispatch(updateInfo(info as Info));
+        }
+      });
+    }
+  }, [newsinfo, dispatch, usersInfos]);
 
   const approverTypeChange = (e: RadioChangeEvent) => {
     setApproverType(e.target.value);
