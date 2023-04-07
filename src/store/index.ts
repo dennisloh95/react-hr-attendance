@@ -1,6 +1,7 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import usersReducer from "./modules/users";
 import signsReducer from "./modules/signs";
+import checksReducer from "./modules/checks";
 import type { UsersState } from "./modules/users";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -22,6 +23,7 @@ const store = configureStore({
       AnyAction
     >,
     signs: signsReducer,
+    checks: checksReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
